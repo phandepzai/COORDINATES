@@ -32,7 +32,7 @@ namespace Generator_Coordinate
             // Đặt lại chế độ về ĐỐM
             chkMode.Checked = false;
             chkMode.Text = "ĐỐM";
-            chkMode.BackColor = Color.FromArgb(80, 80, 80);
+            chkMode.BackColor = Color.FromArgb(235, 170, 90); // Màu cam
 
             // Đặt lại DataGridView
             dataGridViewPreview.Rows.Clear();
@@ -187,14 +187,14 @@ namespace Generator_Coordinate
             {
                 chkMode.BackColor = chkMode.Checked
                     ? Color.FromArgb(60, 179, 113)
-                    : Color.FromArgb(100, 100, 100);
+                    : Color.FromArgb(138, 80, 10);
             };
 
             chkMode.MouseLeave += (s, e) =>
             {
                 chkMode.BackColor = chkMode.Checked
                     ? Color.FromArgb(46, 139, 87)
-                    : Color.FromArgb(80, 80, 80);
+                    : Color.FromArgb(235, 170, 90);
             };
         }
 
@@ -285,7 +285,7 @@ namespace Generator_Coordinate
             txtDefectName.Enabled = chkMode.Checked;
             lblDefectName.Enabled = chkMode.Checked;
             chkMode.Text = chkMode.Checked ? "SPOT" : "ĐỐM";
-            chkMode.BackColor = chkMode.Checked ? Color.FromArgb(46, 139, 87) : Color.FromArgb(80, 80, 80);
+            chkMode.BackColor = chkMode.Checked ? Color.FromArgb(46, 139, 87) : Color.FromArgb(235, 170, 90);
             lblOutputPath.Visible = false;
             UpdateDataGridView();
         }
@@ -302,7 +302,7 @@ namespace Generator_Coordinate
                 UpdateDataGridView();
             }
         }
-
+        //Phương thức xử lý sự kiện khi người dùng nhấn nút "Tạo File"
         private void btnGenerateFiles_Click(object sender, EventArgs e)
         {
             if (string.IsNullOrEmpty(inputFilePath) && dataGridViewPreview.Rows.Count == 0)

@@ -39,14 +39,14 @@
             // chkMode
             // 
             this.chkMode.Appearance = System.Windows.Forms.Appearance.Button;
-            this.chkMode.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(80)))), ((int)(((byte)(80)))), ((int)(((byte)(80)))));
+            this.chkMode.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(235)))), ((int)(((byte)(170)))), ((int)(((byte)(90)))));
             this.chkMode.CheckAlign = System.Drawing.ContentAlignment.MiddleCenter;
             this.chkMode.FlatAppearance.BorderSize = 0;
             this.chkMode.FlatAppearance.CheckedBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(46)))), ((int)(((byte)(139)))), ((int)(((byte)(87)))));
             this.chkMode.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.chkMode.Font = new System.Drawing.Font("Segoe UI Semibold", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.chkMode.ForeColor = System.Drawing.Color.White;
-            this.chkMode.Location = new System.Drawing.Point(9, 84);
+            this.chkMode.Location = new System.Drawing.Point(9, 82);
             this.chkMode.Name = "chkMode";
             this.chkMode.Size = new System.Drawing.Size(76, 36);
             this.chkMode.TabIndex = 7;
@@ -75,7 +75,7 @@
             // 
             this.txtDefectName.Enabled = false;
             this.txtDefectName.Font = new System.Drawing.Font("Segoe UI Semibold", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtDefectName.Location = new System.Drawing.Point(97, 84);
+            this.txtDefectName.Location = new System.Drawing.Point(97, 82);
             this.txtDefectName.Multiline = true;
             this.txtDefectName.Name = "txtDefectName";
             this.txtDefectName.Size = new System.Drawing.Size(145, 36);
@@ -86,7 +86,7 @@
             // lblDefectName
             // 
             this.lblDefectName.AutoSize = true;
-            this.lblDefectName.Location = new System.Drawing.Point(149, 68);
+            this.lblDefectName.Location = new System.Drawing.Point(149, 66);
             this.lblDefectName.Name = "lblDefectName";
             this.lblDefectName.Size = new System.Drawing.Size(64, 13);
             this.lblDefectName.TabIndex = 9;
@@ -118,7 +118,7 @@
             // btnGenerateFiles
             // 
             this.btnGenerateFiles.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnGenerateFiles.Location = new System.Drawing.Point(289, 78);
+            this.btnGenerateFiles.Location = new System.Drawing.Point(289, 76);
             this.btnGenerateFiles.Name = "btnGenerateFiles";
             this.btnGenerateFiles.Size = new System.Drawing.Size(100, 46);
             this.btnGenerateFiles.TabIndex = 2;
@@ -140,7 +140,7 @@
             // lblFilePath
             // 
             this.lblFilePath.AutoSize = true;
-            this.lblFilePath.Location = new System.Drawing.Point(12, 70);
+            this.lblFilePath.Location = new System.Drawing.Point(12, 68);
             this.lblFilePath.Name = "lblFilePath";
             this.lblFilePath.Size = new System.Drawing.Size(0, 13);
             this.lblFilePath.TabIndex = 4;
@@ -149,14 +149,14 @@
             // 
             this.lblOutputPath.Location = new System.Drawing.Point(12, 127);
             this.lblOutputPath.Name = "lblOutputPath";
-            this.lblOutputPath.Size = new System.Drawing.Size(405, 20);
+            this.lblOutputPath.Size = new System.Drawing.Size(528, 20);
             this.lblOutputPath.TabIndex = 6;
             this.lblOutputPath.Text = "Đường dẫn thư mục đầu ra: ";
             // 
             // btnInitialize
             // 
             this.btnInitialize.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnInitialize.Location = new System.Drawing.Point(416, 78);
+            this.btnInitialize.Location = new System.Drawing.Point(416, 76);
             this.btnInitialize.Name = "btnInitialize";
             this.btnInitialize.Size = new System.Drawing.Size(103, 46);
             this.btnInitialize.TabIndex = 10;
