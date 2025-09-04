@@ -74,7 +74,7 @@ namespace Generator_Coordinate
                 e.Handled = true;
             }
         }
-
+        //Dán trực tiếp dữ liệu vào Gridview
         private void HandlePaste()
         {
             try
@@ -149,7 +149,7 @@ namespace Generator_Coordinate
                 MessageBox.Show($"Lỗi khi paste dữ liệu: {ex.Message}", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
-
+        //Test đọc/ghi file trong ổ D:\
         private bool CanWriteToDirectory(string path)
         {
             try
