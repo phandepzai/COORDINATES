@@ -63,6 +63,7 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.dataGridViewPreview.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.AllCells;
+            this.dataGridViewPreview.BackgroundColor = System.Drawing.SystemColors.Info;
             this.dataGridViewPreview.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dataGridViewPreview.Location = new System.Drawing.Point(9, 150);
             this.dataGridViewPreview.Name = "dataGridViewPreview";
@@ -86,11 +87,11 @@
             // lblDefectName
             // 
             this.lblDefectName.AutoSize = true;
-            this.lblDefectName.Location = new System.Drawing.Point(149, 66);
+            this.lblDefectName.Location = new System.Drawing.Point(108, 64);
             this.lblDefectName.Name = "lblDefectName";
-            this.lblDefectName.Size = new System.Drawing.Size(64, 13);
+            this.lblDefectName.Size = new System.Drawing.Size(99, 13);
             this.lblDefectName.TabIndex = 9;
-            this.lblDefectName.Text = "Nhập tên lỗi";
+            this.lblDefectName.Text = "Nhập tên lỗi rework";
             this.toolTip.SetToolTip(this.lblDefectName, "Nhập tên lỗi đối với các lỗi như:\r\n- B-Spot\r\n- White Spot\r\n\r\n(Chú ý ghi đúng chín" +
         "h tả từng ký tự thì chương trình mới\r\n nhận diện được file.)");
             // 

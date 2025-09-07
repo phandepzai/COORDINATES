@@ -135,7 +135,7 @@ namespace Generator_Coordinate
 
                 if (!hasValidData)
                 {
-                    string mode = chkMode.Checked ? "SPOT (định dạng: CELL_ID=X,Y hoặc CELL_ID<TAB>X,Y hoặc CELL_ID,X,Y)" : "ĐỐM (định dạng: CELL_ID<TAB>Sx1<TAB>Sx2<TAB>Ey1<TAB>Ey2)";
+                    string mode = chkMode.Checked ? "SPOT (định dạng: CELL_ID=X,Y hoặc CELL_ID<TAB>X,Y hoặc CELL_ID,X,Y)" : "ĐỐM (định dạng: CELL_ID<TAB>Sx<TAB>Sy<TAB>Ex<TAB>Ey)";
                     MessageBox.Show($"Dữ liệu clipboard không hợp lệ cho chế độ {mode}.", "Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 }
 
@@ -201,16 +201,16 @@ namespace Generator_Coordinate
             dataGridViewPreview.Columns.Clear();
             if (isSpotMode)
             {
-                dataGridViewPreview.Columns.Add("CellID", "Mã Cell");
-                dataGridViewPreview.Columns.Add("CoordinatesXY", "Tọa độ XY");
+                dataGridViewPreview.Columns.Add("CellID", "CELL ID");
+                dataGridViewPreview.Columns.Add("CoordinatesXY", "TỌA ĐỘ X,Y");
             }
             else
             {
-                dataGridViewPreview.Columns.Add("CellID", "Mã Cell");
-                dataGridViewPreview.Columns.Add("DefectSx1", "Lỗi Sx1");
-                dataGridViewPreview.Columns.Add("DefectSx2", "Lỗi Sx2");
-                dataGridViewPreview.Columns.Add("DefectEy1", "Lỗi Ey1");
-                dataGridViewPreview.Columns.Add("DefectEy2", "Lỗi Ey2");
+                dataGridViewPreview.Columns.Add("CellID", "CELL ID");
+                dataGridViewPreview.Columns.Add("DefectSx1", "TỌA ĐỘ Sx");
+                dataGridViewPreview.Columns.Add("DefectSx2", "TỌA ĐỘ Sy");
+                dataGridViewPreview.Columns.Add("DefectEy1", "TỌA ĐỘ Ex");
+                dataGridViewPreview.Columns.Add("DefectEy2", "TỌA ĐỘ Ey");
             }
             dataGridViewPreview.Refresh(); // Làm mới giao diện DataGridView
         }
@@ -274,7 +274,7 @@ namespace Generator_Coordinate
 
                     if (!hasValidData)
                     {
-                        string mode = chkMode.Checked ? "SPOT (định dạng: CELL_ID=X,Y)" : "ĐỐM (định dạng: CELL_ID\\tSx1\\tSx2\\tEy1\\tEy2)";
+                        string mode = chkMode.Checked ? "SPOT (định dạng: CELL_ID=X,Y)" : "ĐỐM (định dạng: CELL_ID\\tSx\\tSy\\tEx\\tEy)";
                         MessageBox.Show($"File không chứa dữ liệu hợp lệ cho chế độ {mode}.", "Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     }
                 }
@@ -382,14 +382,12 @@ namespace Generator_Coordinate
                             string filePath = Path.Combine(outputDirectory, $"{cellId}.txt");
                             using (StreamWriter writer = new StreamWriter(filePath, false, new UTF8Encoding(false)))
                             {
-                                writer.WriteLine("[MANUAL_MCA_DETAIL]");
-                                writer.WriteLine($"CELL_ID={cellId}");
+                                writer.WriteLine("[DETAIL_RESULT]");
+                                writer.WriteLine($"DETAIL_RESULT_COUNT={coordinates.Count}");
                                 for (int i = 0; i < coordinates.Count; i++)
                                 {
-                                    writer.WriteLine($"DEFECT_COUNT={i + 1}");
-                                    writer.WriteLine($"DEFECT_NAME={txtDefectName.Text}");
-                                    writer.WriteLine($"Position X={coordinates[i].X}");
-                                    writer.WriteLine($"Position Y={coordinates[i].Y}");
+                                    writer.WriteLine($"DETAIL_RESULT_NAME={txtDefectName.Text}");
+                                    writer.WriteLine($"DETAIL_RESULT_XY_{i + 1}={coordinates[i].X},{coordinates[i].Y}");
                                 }
                             }
                             fileCount++;
@@ -397,34 +395,31 @@ namespace Generator_Coordinate
                     }
                     else // Chế độ ĐỐM
                     {
-                        Dictionary<string, List<(string Sx, string Ey)>> cellData = new Dictionary<string, List<(string, string)>>();
+                        Dictionary<string, List<(string Sx, string Sy, string Ex, string Ey)>> cellData = new Dictionary<string, List<(string, string, string, string)>>();
 
                         foreach (DataGridViewRow row in dataGridViewPreview.Rows)
                         {
                             if (row.IsNewRow) continue;
                             string cellId = row.Cells["CellID"].Value?.ToString().Trim();
-                            string sx1 = row.Cells["DefectSx1"].Value?.ToString().Trim();
-                            string sx2 = row.Cells["DefectSx2"].Value?.ToString().Trim();
-                            string ey1 = row.Cells["DefectEy1"].Value?.ToString().Trim();
-                            string ey2 = row.Cells["DefectEy2"].Value?.ToString().Trim();
+                            string sx = row.Cells["DefectSx1"].Value?.ToString().Trim();
+                            string sy = row.Cells["DefectSx2"].Value?.ToString().Trim();
+                            string ex = row.Cells["DefectEy1"].Value?.ToString().Trim();
+                            string ey = row.Cells["DefectEy2"].Value?.ToString().Trim();
 
-                            if (string.IsNullOrWhiteSpace(cellId) || string.IsNullOrWhiteSpace(sx1) ||
-                                string.IsNullOrWhiteSpace(sx2) || string.IsNullOrWhiteSpace(ey1) ||
-                                string.IsNullOrWhiteSpace(ey2))
+                            if (string.IsNullOrWhiteSpace(cellId) || string.IsNullOrWhiteSpace(sx) ||
+                                string.IsNullOrWhiteSpace(sy) || string.IsNullOrWhiteSpace(ex) ||
+                                string.IsNullOrWhiteSpace(ey))
                                 continue;
 
-                            if (!double.TryParse(sx1, out _) || !double.TryParse(sx2, out _) ||
-                                !double.TryParse(ey1, out _) || !double.TryParse(ey2, out _))
+                            if (!double.TryParse(sx, out _) || !double.TryParse(sy, out _) ||
+                                !double.TryParse(ex, out _) || !double.TryParse(ey, out _))
                                 continue;
-
-                            string defectSx = $"{sx1},{sx2}";
-                            string defectEy = $"{ey1},{ey2}";
 
                             if (!cellData.ContainsKey(cellId))
                             {
-                                cellData[cellId] = new List<(string, string)>();
+                                cellData[cellId] = new List<(string, string, string, string)>();
                             }
-                            cellData[cellId].Add((defectSx, defectEy));
+                            cellData[cellId].Add((sx, sy, ex, ey));
                         }
 
                         foreach (var cell in cellData)
@@ -435,11 +430,12 @@ namespace Generator_Coordinate
                             string filePath = Path.Combine(outputDirectory, $"{cellId}.txt");
                             using (StreamWriter writer = new StreamWriter(filePath, false, new UTF8Encoding(false)))
                             {
-                                writer.WriteLine($"CELL_ID={cellId}");
+                                writer.WriteLine("[MANUAL_POS_DETAIL]");
+                                writer.WriteLine($"DETAIL_DEFECT_COUNT={defects.Count}");
                                 for (int i = 0; i < defects.Count; i++)
                                 {
-                                    writer.WriteLine($"DEFECT_Sx{i + 1}={defects[i].Sx}");
-                                    writer.WriteLine($"DEFECT_Ey{i + 1}={defects[i].Ey}");
+                                    writer.WriteLine($"DEFECT_{i + 1}_X={defects[i].Sx},{defects[i].Ex}");
+                                    writer.WriteLine($"DEFECT_{i + 1}_Y={defects[i].Sy},{defects[i].Ey}");
                                 }
                             }
                             fileCount++;
@@ -483,14 +479,12 @@ namespace Generator_Coordinate
                             string filePath = Path.Combine(outputDirectory, $"{cellId}.txt");
                             using (StreamWriter writer = new StreamWriter(filePath, false, new UTF8Encoding(false)))
                             {
-                                writer.WriteLine("[MANUAL_MCA_DETAIL]");
-                                writer.WriteLine($"CELL_ID={cellId}");
+                                writer.WriteLine("[DETAIL_RESULT]");
+                                writer.WriteLine($"DETAIL_RESULT_COUNT={coordinates.Count}");
                                 for (int i = 0; i < coordinates.Count; i++)
                                 {
-                                    writer.WriteLine($"DEFECT_COUNT={i + 1}");
-                                    writer.WriteLine($"DEFECT_NAME={txtDefectName.Text}");
-                                    writer.WriteLine($"Position X={coordinates[i].X}");
-                                    writer.WriteLine($"Position Y={coordinates[i].Y}");
+                                    writer.WriteLine($"DETAIL_RESULT_NAME={txtDefectName.Text}");
+                                    writer.WriteLine($"DETAIL_RESULT_XY_{i + 1}={coordinates[i].X},{coordinates[i].Y}");
                                 }
                             }
                             fileCount++;
@@ -498,7 +492,7 @@ namespace Generator_Coordinate
                     }
                     else // Chế độ ĐỐM
                     {
-                        Dictionary<string, List<(string Sx, string Ey)>> cellData = new Dictionary<string, List<(string, string)>>();
+                        Dictionary<string, List<(string Sx, string Sy, string Ex, string Ey)>> cellData = new Dictionary<string, List<(string, string, string, string)>>();
 
                         using (StreamReader reader = new StreamReader(inputFilePath))
                         {
@@ -509,16 +503,18 @@ namespace Generator_Coordinate
                                 string[] parts = line.Split('\t');
                                 if (parts.Length != 5) continue;
                                 string cellId = parts[0].Trim();
-                                string defectSx = $"{parts[1].Trim()},{parts[2].Trim()}";
-                                string defectEy = $"{parts[3].Trim()},{parts[4].Trim()}";
-                                if (!double.TryParse(parts[1].Trim(), out _) || !double.TryParse(parts[2].Trim(), out _) ||
-                                    !double.TryParse(parts[3].Trim(), out _) || !double.TryParse(parts[4].Trim(), out _))
+                                string sx = parts[1].Trim();
+                                string sy = parts[2].Trim();
+                                string ex = parts[3].Trim();
+                                string ey = parts[4].Trim();
+                                if (!double.TryParse(sx, out _) || !double.TryParse(sy, out _) ||
+                                    !double.TryParse(ex, out _) || !double.TryParse(ey, out _))
                                     continue;
                                 if (!cellData.ContainsKey(cellId))
                                 {
-                                    cellData[cellId] = new List<(string, string)>();
+                                    cellData[cellId] = new List<(string, string, string, string)>();
                                 }
-                                cellData[cellId].Add((defectSx, defectEy));
+                                cellData[cellId].Add((sx, sy, ex, ey));
                             }
                         }
 
@@ -530,11 +526,12 @@ namespace Generator_Coordinate
                             string filePath = Path.Combine(outputDirectory, $"{cellId}.txt");
                             using (StreamWriter writer = new StreamWriter(filePath, false, new UTF8Encoding(false)))
                             {
-                                writer.WriteLine($"CELL_ID={cellId}");
+                                writer.WriteLine("[MANUAL_POS_DETAIL]");
+                                writer.WriteLine($"DETAIL_DEFECT_COUNT={defects.Count}");
                                 for (int i = 0; i < defects.Count; i++)
                                 {
-                                    writer.WriteLine($"DEFECT_Sx{i + 1}={defects[i].Sx}");
-                                    writer.WriteLine($"DEFECT_Ey{i + 1}={defects[i].Ey}");
+                                    writer.WriteLine($"DEFECT_{i + 1}_X={defects[i].Sx},{defects[i].Ex}");
+                                    writer.WriteLine($"DEFECT_{i + 1}_Y={defects[i].Sy},{defects[i].Ey}");
                                 }
                             }
                             fileCount++;
