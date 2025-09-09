@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.IO;
-using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 
@@ -13,6 +12,8 @@ namespace Generator_Coordinate
     {
         private string inputFilePath;
         private string outputDirectory;
+
+        #region KHỞI TẠO ỨNG DỤNG VÀ CÀI ĐẶT SỰ KIỆN BÀN PHÍM
 
         public MainForm()
         {
@@ -28,6 +29,7 @@ namespace Generator_Coordinate
             txtDefectName.Text = string.Empty;
             txtDefectName.Enabled = false;
             lblDefectName.Enabled = false;
+            labelAuthor.BackColor = Color.Transparent;
 
             // Đặt lại chế độ về ĐỐM
             chkMode.Checked = false;
@@ -40,13 +42,28 @@ namespace Generator_Coordinate
 
             // Đặt lại thư mục đầu ra
             string currentDate = DateTime.Now.ToString("yyyyMMdd");
-            outputDirectory = $@"D:\Non_Doccuments\FAB_{currentDate}";
+            string baseOutputPath = @"D:\Non_Documents";
+            outputDirectory = $@"{baseOutputPath}\FAB_{currentDate}";
 
-            // Kiểm tra quyền ghi vào thư mục đầu ra
-            if (!CanWriteToDirectory(@"D:\Non_Doccuments"))
+            // Kiểm tra và tạo thư mục gốc D:\Non_Documents nếu chưa tồn tại
+            try
             {
-                MessageBox.Show("Không có quyền ghi vào thư mục D:\\Non_Doccuments. Vui lòng kiểm tra quyền truy cập.", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                outputDirectory = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
+                if (!Directory.Exists(baseOutputPath))
+                {
+                    Directory.CreateDirectory(baseOutputPath);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Không thể tạo thư mục {baseOutputPath}: {ex.Message}. Chuyển sang thư mục Desktop.", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                outputDirectory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), $"FAB_{currentDate}");
+            }
+
+            // Kiểm tra quyền ghi vào thư mục gốc
+            if (!CanWriteToDirectory(baseOutputPath))
+            {
+                MessageBox.Show($"Không có quyền ghi vào thư mục {baseOutputPath}. Chuyển sang thư mục Desktop.", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                outputDirectory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), $"FAB_{currentDate}");
             }
 
             // Cập nhật nhãn đường dẫn đầu ra
@@ -74,6 +91,10 @@ namespace Generator_Coordinate
                 e.Handled = true;
             }
         }
+        #endregion
+
+        #region XỬ LÝ DỮ LIỆU PASTE VÀ KIỂM TRA QUYỀN GHI
+
         //Dán trực tiếp dữ liệu vào Gridview
         private void HandlePaste()
         {
@@ -119,16 +140,16 @@ namespace Generator_Coordinate
                         if (parts.Length != 5) continue;
 
                         string cellId = parts[0].Trim();
-                        string sx1 = parts[1].Trim();
-                        string sx2 = parts[2].Trim();
-                        string ey1 = parts[3].Trim();
-                        string ey2 = parts[4].Trim();
+                        string sx = parts[1].Trim();
+                        string sy = parts[2].Trim();
+                        string ex = parts[3].Trim();
+                        string ey = parts[4].Trim();
 
-                        if (!double.TryParse(sx1, out _) || !double.TryParse(sx2, out _) ||
-                            !double.TryParse(ey1, out _) || !double.TryParse(ey2, out _))
+                        if (!double.TryParse(sx, out _) || !double.TryParse(sy, out _) ||
+                            !double.TryParse(ex, out _) || !double.TryParse(ey, out _))
                             continue;
 
-                        dataGridViewPreview.Rows.Add(cellId, sx1, sx2, ey1, ey2);
+                        dataGridViewPreview.Rows.Add(cellId, sx, sy, ex, ey);
                         hasValidData = true;
                     }
                 }
@@ -195,6 +216,9 @@ namespace Generator_Coordinate
                     : Color.FromArgb(235, 170, 90);
             };
         }
+#endregion
+
+        #region GIAO DIỆN DATAGRIDVIEW VÀ CẬP NHẬT NỘI DUNG
 
         private void UpdateDataGridViewColumns(bool isSpotMode)
         {
@@ -207,10 +231,10 @@ namespace Generator_Coordinate
             else
             {
                 dataGridViewPreview.Columns.Add("CellID", "CELL ID");
-                dataGridViewPreview.Columns.Add("DefectSx1", "TỌA ĐỘ Sx");
-                dataGridViewPreview.Columns.Add("DefectSx2", "TỌA ĐỘ Sy");
-                dataGridViewPreview.Columns.Add("DefectEy1", "TỌA ĐỘ Ex");
-                dataGridViewPreview.Columns.Add("DefectEy2", "TỌA ĐỘ Ey");
+                dataGridViewPreview.Columns.Add("DefectSx", "TỌA ĐỘ Sx");
+                dataGridViewPreview.Columns.Add("DefectSy", "TỌA ĐỘ Sy");
+                dataGridViewPreview.Columns.Add("DefectEx", "TỌA ĐỘ Ex");
+                dataGridViewPreview.Columns.Add("DefectEy", "TỌA ĐỘ Ey");
             }
             dataGridViewPreview.Refresh(); // Làm mới giao diện DataGridView
         }
@@ -315,6 +339,11 @@ namespace Generator_Coordinate
                 UpdateDataGridView();
             }
         }
+
+        #endregion
+
+        #region NÚT BẤM TẠO FILE VÀ XỬ LÝ SỰ KIỆN
+
         //Phương thức xử lý sự kiện khi người dùng nhấn nút "Tạo File"
         private void btnGenerateFiles_Click(object sender, EventArgs e)
         {
@@ -338,6 +367,21 @@ namespace Generator_Coordinate
 
             try
             {
+                // Kiểm tra và tạo thư mục gốc D:\Non_Documents nếu chưa tồn tại
+                string baseOutputPath = @"D:\Non_Documents";
+                if (!Directory.Exists(baseOutputPath))
+                {
+                    Directory.CreateDirectory(baseOutputPath);
+                }
+
+                // Kiểm tra quyền ghi vào thư mục gốc
+                if (!CanWriteToDirectory(baseOutputPath))
+                {
+                    MessageBox.Show($"Không có quyền ghi vào thư mục {baseOutputPath}. Chuyển sang thư mục Desktop.", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    outputDirectory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), Path.GetFileName(outputDirectory));
+                }
+
+                // Tạo thư mục đầu ra cụ thể (FAB_YYYYMMDD) nếu chưa tồn tại
                 if (!Directory.Exists(outputDirectory))
                 {
                     Directory.CreateDirectory(outputDirectory);
@@ -401,10 +445,10 @@ namespace Generator_Coordinate
                         {
                             if (row.IsNewRow) continue;
                             string cellId = row.Cells["CellID"].Value?.ToString().Trim();
-                            string sx = row.Cells["DefectSx1"].Value?.ToString().Trim();
-                            string sy = row.Cells["DefectSx2"].Value?.ToString().Trim();
-                            string ex = row.Cells["DefectEy1"].Value?.ToString().Trim();
-                            string ey = row.Cells["DefectEy2"].Value?.ToString().Trim();
+                            string sx = row.Cells["DefectSx"].Value?.ToString().Trim();
+                            string sy = row.Cells["DefectSy"].Value?.ToString().Trim();
+                            string ex = row.Cells["DefectEx"].Value?.ToString().Trim();
+                            string ey = row.Cells["DefectEy"].Value?.ToString().Trim();
 
                             if (string.IsNullOrWhiteSpace(cellId) || string.IsNullOrWhiteSpace(sx) ||
                                 string.IsNullOrWhiteSpace(sy) || string.IsNullOrWhiteSpace(ex) ||
@@ -540,7 +584,7 @@ namespace Generator_Coordinate
                 }
 
                 lblOutputPath.Visible = true;
-                lblOutputPath.ForeColor = Color.DarkGreen;
+                lblOutputPath.ForeColor = Color.ForestGreen;
                 MessageBox.Show($"Tạo thành công {fileCount} tệp!", "Thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
             catch (Exception ex)
@@ -548,7 +592,9 @@ namespace Generator_Coordinate
                 MessageBox.Show($"Đã xảy ra lỗi: {ex.Message}", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
+        #endregion
 
+        #region KIỂM TRA TÊN LỖI, MỞ THƯ MỤC
         private bool IsValidDefectName(string name)
         {
             if (string.IsNullOrWhiteSpace(name)) return false;
@@ -571,13 +617,9 @@ namespace Generator_Coordinate
         {
             ResetApplicationState();
             lblOutputPath.Text = "Ứng dụng đã được khởi tạo lại!";
-            lblOutputPath.ForeColor = Color.DarkGreen;
+            lblOutputPath.ForeColor = Color.Peru;
             lblOutputPath.Visible = true;
         }
-
-        private void labelAuthor_Click(object sender, EventArgs e)
-        {
-            labelAuthor.BackColor = Color.Transparent;
-        }
+        #endregion
     }
 }

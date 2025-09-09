@@ -7,7 +7,7 @@
     <ProjectGuid>{E56EA3D4-6B8D-40C5-8229-AD7AB62A1C24}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <RootNamespace>COORDINATES_TOOL</RootNamespace>
-    <AssemblyName>COORDINATES TOOL</AssemblyName>
+    <AssemblyName>COORDINATES</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
@@ -33,7 +33,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationIcon>TXT.ico</ApplicationIcon>
+    <ApplicationIcon>txt_icon.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -87,7 +87,7 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="TXT.ico" />
+    <EmbeddedResource Include="txt_icon.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

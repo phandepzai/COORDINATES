@@ -14,8 +14,10 @@
         private System.Windows.Forms.Label lblDefectName;
         private System.Windows.Forms.ToolTip toolTip;
         private System.Windows.Forms.Button btnInitialize; // Nút Khởi tạo lại mới
+        private System.Windows.Forms.Label labelAuthor;
         private System.ComponentModel.IContainer components;
 
+        #region PHẦN THIẾT GIAO GIAO DIỆN ỨNG DỤNG
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
@@ -46,7 +48,7 @@
             this.chkMode.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.chkMode.Font = new System.Drawing.Font("Segoe UI Semibold", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.chkMode.ForeColor = System.Drawing.Color.White;
-            this.chkMode.Location = new System.Drawing.Point(9, 82);
+            this.chkMode.Location = new System.Drawing.Point(10, 82);
             this.chkMode.Name = "chkMode";
             this.chkMode.Size = new System.Drawing.Size(76, 36);
             this.chkMode.TabIndex = 7;
@@ -148,11 +150,13 @@
             // 
             // lblOutputPath
             // 
+            this.lblOutputPath.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblOutputPath.Location = new System.Drawing.Point(12, 127);
             this.lblOutputPath.Name = "lblOutputPath";
             this.lblOutputPath.Size = new System.Drawing.Size(528, 20);
             this.lblOutputPath.TabIndex = 6;
-            this.lblOutputPath.Text = "Đường dẫn thư mục đầu ra: ";
+            this.lblOutputPath.Text = "Path thư mục đầu ra: ";
+            this.lblOutputPath.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // btnInitialize
             // 
@@ -169,15 +173,14 @@
             // 
             this.labelAuthor.AutoSize = true;
             this.labelAuthor.BackColor = System.Drawing.Color.Transparent;
-            this.labelAuthor.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.labelAuthor.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.labelAuthor.ForeColor = System.Drawing.SystemColors.ButtonShadow;
-            this.labelAuthor.Location = new System.Drawing.Point(441, 526);
+            this.labelAuthor.Location = new System.Drawing.Point(444, 525);
             this.labelAuthor.Name = "labelAuthor";
-            this.labelAuthor.Size = new System.Drawing.Size(92, 13);
+            this.labelAuthor.Size = new System.Drawing.Size(90, 13);
             this.labelAuthor.TabIndex = 11;
             this.labelAuthor.Text = "©Nông Văn Phấn";
             this.labelAuthor.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.labelAuthor.Click += new System.EventHandler(this.labelAuthor_Click);
             // 
             // MainForm
             // 
@@ -196,7 +199,9 @@
             this.Controls.Add(this.btnGenerateFiles);
             this.Controls.Add(this.txtFilePath);
             this.Controls.Add(this.btnSelectFile);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.MaximizeBox = false;
             this.Name = "MainForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Generator Coordinate";
@@ -205,7 +210,6 @@
             this.PerformLayout();
 
         }
-
-        private System.Windows.Forms.Label labelAuthor;
+        #endregion
     }
 }
