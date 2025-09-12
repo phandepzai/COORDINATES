@@ -48,7 +48,7 @@
             this.chkMode.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.chkMode.Font = new System.Drawing.Font("Segoe UI Semibold", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.chkMode.ForeColor = System.Drawing.Color.White;
-            this.chkMode.Location = new System.Drawing.Point(10, 82);
+            this.chkMode.Location = new System.Drawing.Point(17, 82);
             this.chkMode.Name = "chkMode";
             this.chkMode.Size = new System.Drawing.Size(76, 36);
             this.chkMode.TabIndex = 7;
@@ -66,19 +66,21 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.dataGridViewPreview.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.AllCells;
             this.dataGridViewPreview.BackgroundColor = System.Drawing.SystemColors.Info;
+            this.dataGridViewPreview.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             this.dataGridViewPreview.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dataGridViewPreview.Location = new System.Drawing.Point(9, 150);
             this.dataGridViewPreview.Name = "dataGridViewPreview";
             this.dataGridViewPreview.ReadOnly = true;
             this.dataGridViewPreview.Size = new System.Drawing.Size(531, 394);
             this.dataGridViewPreview.TabIndex = 5;
-            this.toolTip.SetToolTip(this.dataGridViewPreview, "@Nông Văn Phấn\r\nFAB Inspection Part(SDV)");
+            this.toolTip.SetToolTip(this.dataGridViewPreview, "Bấm chuột trái vào đây rồi dán list cell từ clipboard để thêm cell cần tạo file t" +
+        "ọa độ");
             // 
             // txtDefectName
             // 
             this.txtDefectName.Enabled = false;
             this.txtDefectName.Font = new System.Drawing.Font("Segoe UI Semibold", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtDefectName.Location = new System.Drawing.Point(97, 82);
+            this.txtDefectName.Location = new System.Drawing.Point(104, 82);
             this.txtDefectName.Multiline = true;
             this.txtDefectName.Name = "txtDefectName";
             this.txtDefectName.Size = new System.Drawing.Size(145, 36);
@@ -89,7 +91,7 @@
             // lblDefectName
             // 
             this.lblDefectName.AutoSize = true;
-            this.lblDefectName.Location = new System.Drawing.Point(108, 64);
+            this.lblDefectName.Location = new System.Drawing.Point(115, 64);
             this.lblDefectName.Name = "lblDefectName";
             this.lblDefectName.Size = new System.Drawing.Size(99, 13);
             this.lblDefectName.TabIndex = 9;
@@ -100,7 +102,7 @@
             // btnSelectFile
             // 
             this.btnSelectFile.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnSelectFile.Location = new System.Drawing.Point(9, 18);
+            this.btnSelectFile.Location = new System.Drawing.Point(16, 15);
             this.btnSelectFile.Name = "btnSelectFile";
             this.btnSelectFile.Size = new System.Drawing.Size(82, 39);
             this.btnSelectFile.TabIndex = 0;
@@ -111,17 +113,17 @@
             // txtFilePath
             // 
             this.txtFilePath.Font = new System.Drawing.Font("Consolas", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtFilePath.Location = new System.Drawing.Point(97, 18);
+            this.txtFilePath.Location = new System.Drawing.Point(104, 15);
             this.txtFilePath.Multiline = true;
             this.txtFilePath.Name = "txtFilePath";
             this.txtFilePath.ReadOnly = true;
-            this.txtFilePath.Size = new System.Drawing.Size(325, 39);
+            this.txtFilePath.Size = new System.Drawing.Size(292, 39);
             this.txtFilePath.TabIndex = 1;
             // 
             // btnGenerateFiles
             // 
             this.btnGenerateFiles.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnGenerateFiles.Location = new System.Drawing.Point(289, 76);
+            this.btnGenerateFiles.Location = new System.Drawing.Point(296, 76);
             this.btnGenerateFiles.Name = "btnGenerateFiles";
             this.btnGenerateFiles.Size = new System.Drawing.Size(100, 46);
             this.btnGenerateFiles.TabIndex = 2;
@@ -131,10 +133,10 @@
             // 
             // btnOpenDirectory
             // 
-            this.btnOpenDirectory.Font = new System.Drawing.Font("Segoe UI Semibold", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnOpenDirectory.Location = new System.Drawing.Point(428, 14);
+            this.btnOpenDirectory.Font = new System.Drawing.Font("Segoe UI Semibold", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnOpenDirectory.Location = new System.Drawing.Point(423, 12);
             this.btnOpenDirectory.Name = "btnOpenDirectory";
-            this.btnOpenDirectory.Size = new System.Drawing.Size(116, 46);
+            this.btnOpenDirectory.Size = new System.Drawing.Size(103, 46);
             this.btnOpenDirectory.TabIndex = 3;
             this.btnOpenDirectory.Text = "Mở thư mục chứa file vừa tạo";
             this.btnOpenDirectory.UseVisualStyleBackColor = true;
@@ -161,7 +163,7 @@
             // btnInitialize
             // 
             this.btnInitialize.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnInitialize.Location = new System.Drawing.Point(416, 76);
+            this.btnInitialize.Location = new System.Drawing.Point(423, 76);
             this.btnInitialize.Name = "btnInitialize";
             this.btnInitialize.Size = new System.Drawing.Size(103, 46);
             this.btnInitialize.TabIndex = 10;
@@ -175,7 +177,7 @@
             this.labelAuthor.BackColor = System.Drawing.Color.Transparent;
             this.labelAuthor.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.labelAuthor.ForeColor = System.Drawing.SystemColors.ButtonShadow;
-            this.labelAuthor.Location = new System.Drawing.Point(444, 525);
+            this.labelAuthor.Location = new System.Drawing.Point(448, 526);
             this.labelAuthor.Name = "labelAuthor";
             this.labelAuthor.Size = new System.Drawing.Size(90, 13);
             this.labelAuthor.TabIndex = 11;

@@ -19,6 +19,10 @@ namespace Generator_Coordinate
         {
             InitializeComponent();
             ResetApplicationState(); // Khởi tạo trạng thái ứng dụng
+            toolTip.AutoPopDelay = 5000;
+            toolTip.InitialDelay = 300;
+            toolTip.ReshowDelay = 100;
+            toolTip.ShowAlways = false;
         }
 
         private void ResetApplicationState()
@@ -71,7 +75,6 @@ namespace Generator_Coordinate
             lblOutputPath.Visible = false;
 
             // Áp dụng hiệu ứng hình ảnh
-            ApplyRoundedCornersToCheckBox();
             InitializeHoverEffect();
 
             // Đảm bảo KeyPreview được bật
@@ -181,22 +184,6 @@ namespace Generator_Coordinate
             catch
             {
                 return false;
-            }
-        }
-
-        private void ApplyRoundedCornersToCheckBox()
-        {
-            using (GraphicsPath path = new GraphicsPath())
-            {
-                int radius = 5;
-                Rectangle rect = new Rectangle(0, 0, chkMode.Width, chkMode.Height);
-                int diameter = radius * 2;
-                path.AddArc(rect.X, rect.Y, diameter, diameter, 180, 90);
-                path.AddArc(rect.Width - diameter, rect.Y, diameter, diameter, 270, 90);
-                path.AddArc(rect.Width - diameter, rect.Height - diameter, diameter, diameter, 0, 90);
-                path.AddArc(rect.X, rect.Height - diameter, diameter, diameter, 90, 90);
-                path.CloseFigure();
-                chkMode.Region = new Region(path);
             }
         }
 
