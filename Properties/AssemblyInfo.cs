@@ -1,5 +1,4 @@
 ﻿using System.Reflection;
-using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
 // General Information about an assembly is controlled through the following
@@ -8,9 +7,9 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("Generator Coordinate")]
 [assembly: AssemblyDescription("Generator Coordinate")]
 [assembly: AssemblyConfiguration("Generator Coordinate")]
-[assembly: AssemblyCompany("Author: Nông Văn Phấn")]
+[assembly: AssemblyCompany("©Nông Văn Phấn")]
 [assembly: AssemblyProduct("Generator Coordinate")]
-[assembly: AssemblyCopyright("Copyright © 2025")]
+[assembly: AssemblyCopyright("Copyright by ©Nông Văn Phấn 2025")]
 [assembly: AssemblyTrademark("Generator Coordinate")]
 [assembly: AssemblyCulture("")]
 
@@ -29,5 +28,5 @@ using System.Runtime.InteropServices;
 //      Build Number
 //      Revision
 //
-[assembly: AssemblyVersion("1.0.0.0")]
-[assembly: AssemblyFileVersion("1.0.0.0")]
+[assembly: AssemblyVersion("3.0")]
+[assembly: AssemblyFileVersion("3.0")]

@@ -31,18 +31,18 @@ namespace Generator_Coordinate
             inputFilePath = string.Empty;
             txtFilePath.Text = string.Empty;
             txtDefectName.Text = string.Empty;
-            txtDefectName.Enabled = false;
-            lblDefectName.Enabled = false;
+            txtDefectName.Enabled = chkMode.Checked;
+            lblDefectName.Enabled = chkMode.Checked;
             labelAuthor.BackColor = Color.Transparent;
 
             // Đặt lại chế độ về ĐỐM
-            chkMode.Checked = false;
-            chkMode.Text = "ĐỐM";
-            chkMode.BackColor = Color.FromArgb(235, 170, 90); // Màu cam
+            //chkMode.Checked = false;
+            //chkMode.Text = "ĐỐM";
+            //chkMode.BackColor = Color.FromArgb(235, 170, 90); // Màu cam
 
             // Đặt lại DataGridView
             dataGridViewPreview.Rows.Clear();
-            UpdateDataGridViewColumns(false);
+            UpdateDataGridViewColumns(chkMode.Checked);
 
             // Đặt lại thư mục đầu ra
             string currentDate = DateTime.Now.ToString("yyyyMMdd");
@@ -83,6 +83,7 @@ namespace Generator_Coordinate
             // Gắn lại sự kiện KeyDown cho DataGridView
             dataGridViewPreview.KeyDown -= DataGridViewPreview_KeyDown; // Ngăn đăng ký nhiều lần
             dataGridViewPreview.KeyDown += DataGridViewPreview_KeyDown;
+            UpdateCellCountLabel();
         }
 
         private void DataGridViewPreview_KeyDown(object sender, KeyEventArgs e)
@@ -96,9 +97,8 @@ namespace Generator_Coordinate
         }
         #endregion
 
-        #region XỬ LÝ DỮ LIỆU PASTE VÀ KIỂM TRA QUYỀN GHI
+        #region Trong khu vực #region XỬ LÝ DỮ LIỆU PASTE VÀ KIỂM TRA QUYỀN GHI
 
-        //Dán trực tiếp dữ liệu vào Gridview
         private void HandlePaste()
         {
             try
@@ -110,7 +110,8 @@ namespace Generator_Coordinate
                     return;
                 }
 
-                dataGridViewPreview.Rows.Clear();
+                // LƯU Ý: Dòng này đã được xóa để cho phép dán nhiều lần
+                // dataGridViewPreview.Rows.Clear(); 
                 string[] lines = clipboardText.Split(new[] { "\r\n", "\n" }, StringSplitOptions.RemoveEmptyEntries);
                 bool hasValidData = false;
 
@@ -130,6 +131,7 @@ namespace Generator_Coordinate
 
                         if (!double.TryParse(posX, out _) || !double.TryParse(posY, out _)) continue;
 
+                        // Thêm dòng mới thay vì xóa dòng cũ
                         dataGridViewPreview.Rows.Add(cellId, $"{posX},{posY}");
                         hasValidData = true;
                     }
@@ -152,6 +154,7 @@ namespace Generator_Coordinate
                             !double.TryParse(ex, out _) || !double.TryParse(ey, out _))
                             continue;
 
+                        // Thêm dòng mới thay vì xóa dòng cũ
                         dataGridViewPreview.Rows.Add(cellId, sx, sy, ex, ey);
                         hasValidData = true;
                     }
@@ -164,11 +167,24 @@ namespace Generator_Coordinate
                 }
 
                 lblOutputPath.Visible = false;
+                UpdateCellCountLabel(); // Gọi phương thức cập nhật số lượng
             }
             catch (Exception ex)
             {
                 MessageBox.Show($"Lỗi khi paste dữ liệu: {ex.Message}", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
+        }
+
+        private void UpdateCellCountLabel()
+        {
+            // Kiểm tra và trừ đi dòng trống cuối cùng nếu có
+            int rowCount = dataGridViewPreview.Rows.Count;
+            if (rowCount > 0 && dataGridViewPreview.Rows[rowCount - 1].IsNewRow)
+            {
+                rowCount--;
+            }
+            lblCellCount.Text = $"Q'ty: {rowCount}";
+            lblCellCount.Visible = true;
         }
 
         //Test đọc/ghi file trong ổ D:\
@@ -296,6 +312,7 @@ namespace Generator_Coordinate
             }
 
             dataGridViewPreview.Refresh(); // Làm mới giao diện DataGridView
+            UpdateCellCountLabel(); //Cập nhật số lượng cell trong DataGridView
         }
 
         private void UpdateDataGridView()
@@ -570,8 +587,10 @@ namespace Generator_Coordinate
                     }
                 }
 
+                // Sau khi tạo file thành công
                 lblOutputPath.Visible = true;
                 lblOutputPath.ForeColor = Color.ForestGreen;
+                btnOpenDirectory.Text = $"Mở thư mục {Path.GetFileName(outputDirectory)}"; // Cập nhật văn bản nút bấm
                 MessageBox.Show($"Tạo thành công {fileCount} tệp!", "Thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
             catch (Exception ex)
@@ -606,6 +625,7 @@ namespace Generator_Coordinate
             lblOutputPath.Text = "Ứng dụng đã được khởi tạo lại!";
             lblOutputPath.ForeColor = Color.Peru;
             lblOutputPath.Visible = true;
+            btnOpenDirectory.Text = "Mở thư mục chứa file vừa tạo"; // Đặt lại văn bản nút bấm
         }
         #endregion
     }

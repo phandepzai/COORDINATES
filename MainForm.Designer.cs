@@ -16,6 +16,7 @@
         private System.Windows.Forms.Button btnInitialize; // Nút Khởi tạo lại mới
         private System.Windows.Forms.Label labelAuthor;
         private System.ComponentModel.IContainer components;
+        private System.Windows.Forms.Label lblCellCount;
 
         #region PHẦN THIẾT GIAO GIAO DIỆN ỨNG DỤNG
         private void InitializeComponent()
@@ -35,6 +36,7 @@
             this.lblOutputPath = new System.Windows.Forms.Label();
             this.btnInitialize = new System.Windows.Forms.Button();
             this.labelAuthor = new System.Windows.Forms.Label();
+            this.lblCellCount = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridViewPreview)).BeginInit();
             this.SuspendLayout();
             // 
@@ -54,8 +56,9 @@
             this.chkMode.TabIndex = 7;
             this.chkMode.Text = "ĐỐM";
             this.chkMode.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.toolTip.SetToolTip(this.chkMode, "BẤM VÀO ĐÂY ĐỂ CHUYỂN ĐỔI:\r\n-Chế độ ĐỐM (Sx | Ex | Sy | Ey) (dành cho các lỗi đốm" +
-        ")\r\n-Chế độ SPOT (Position X, Y) (dành cho các lỗi B-spot,White Spot)");
+            this.toolTip.SetToolTip(this.chkMode, "BẤM VÀO ĐÂY ĐỂ CHUYỂN ĐỔI:\r\n- Chế độ ĐỐM (Sx | Sy | Ex | Ey) (dành cho các lỗi Đố" +
+        "m dường dọc, Đốm Panel, Đốm Spin,v.v..)\r\n- Chế độ SPOT (Position X, Y) (dành cho" +
+        " các lỗi B-spot,White Spot)");
             this.chkMode.UseVisualStyleBackColor = false;
             this.chkMode.CheckedChanged += new System.EventHandler(this.chkMode_CheckedChanged);
             // 
@@ -85,8 +88,8 @@
             this.txtDefectName.Name = "txtDefectName";
             this.txtDefectName.Size = new System.Drawing.Size(145, 36);
             this.txtDefectName.TabIndex = 8;
-            this.toolTip.SetToolTip(this.txtDefectName, "Nhập tên lỗi đối với các lỗi như:\r\n- B-Spot\r\n- White Spot\r\n\r\n(Chú ý ghi đúng chín" +
-        "h tả từng ký tự thì chương trình mới\r\n nhận diện được file.)");
+            this.toolTip.SetToolTip(this.txtDefectName, "Nhập tên lỗi đối với các lỗi như:\r\n- B-Spot\r\n- White Spot\r\n\r\n(Lưu ý: Ghi đúng chí" +
+        "nh tả từng ký tự thì chương trình mới\r\n nhận diện được file.)");
             // 
             // lblDefectName
             // 
@@ -96,8 +99,8 @@
             this.lblDefectName.Size = new System.Drawing.Size(99, 13);
             this.lblDefectName.TabIndex = 9;
             this.lblDefectName.Text = "Nhập tên lỗi rework";
-            this.toolTip.SetToolTip(this.lblDefectName, "Nhập tên lỗi đối với các lỗi như:\r\n- B-Spot\r\n- White Spot\r\n\r\n(Chú ý ghi đúng chín" +
-        "h tả từng ký tự thì chương trình mới\r\n nhận diện được file.)");
+            this.toolTip.SetToolTip(this.lblDefectName, "Nhập tên lỗi đối với các lỗi như:\r\n- B-Spot\r\n- White Spot\r\n\r\n(Lưu ý: Ghi đúng chí" +
+        "nh tả từng ký tự thì chương trình mới\r\n nhận diện được file.)\r\n");
             // 
             // btnSelectFile
             // 
@@ -107,6 +110,7 @@
             this.btnSelectFile.Size = new System.Drawing.Size(82, 39);
             this.btnSelectFile.TabIndex = 0;
             this.btnSelectFile.Text = "Chọn tệp";
+            this.toolTip.SetToolTip(this.btnSelectFile, "Bấm vào đây để nhập dữ liệu từ file .txt lưu trong máy.");
             this.btnSelectFile.UseVisualStyleBackColor = true;
             this.btnSelectFile.Click += new System.EventHandler(this.btnSelectFile_Click);
             // 
@@ -117,15 +121,15 @@
             this.txtFilePath.Multiline = true;
             this.txtFilePath.Name = "txtFilePath";
             this.txtFilePath.ReadOnly = true;
-            this.txtFilePath.Size = new System.Drawing.Size(292, 39);
+            this.txtFilePath.Size = new System.Drawing.Size(311, 39);
             this.txtFilePath.TabIndex = 1;
             // 
             // btnGenerateFiles
             // 
             this.btnGenerateFiles.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnGenerateFiles.Location = new System.Drawing.Point(296, 76);
+            this.btnGenerateFiles.Location = new System.Drawing.Point(315, 82);
             this.btnGenerateFiles.Name = "btnGenerateFiles";
-            this.btnGenerateFiles.Size = new System.Drawing.Size(100, 46);
+            this.btnGenerateFiles.Size = new System.Drawing.Size(100, 36);
             this.btnGenerateFiles.TabIndex = 2;
             this.btnGenerateFiles.Text = "TẠO FILE";
             this.btnGenerateFiles.UseVisualStyleBackColor = true;
@@ -134,11 +138,12 @@
             // btnOpenDirectory
             // 
             this.btnOpenDirectory.Font = new System.Drawing.Font("Segoe UI Semibold", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnOpenDirectory.Location = new System.Drawing.Point(423, 12);
+            this.btnOpenDirectory.Location = new System.Drawing.Point(432, 15);
             this.btnOpenDirectory.Name = "btnOpenDirectory";
-            this.btnOpenDirectory.Size = new System.Drawing.Size(103, 46);
+            this.btnOpenDirectory.Size = new System.Drawing.Size(103, 39);
             this.btnOpenDirectory.TabIndex = 3;
             this.btnOpenDirectory.Text = "Mở thư mục chứa file vừa tạo";
+            this.toolTip.SetToolTip(this.btnOpenDirectory, "Bấm vào đây để mở thư mục chứa file tọa độ vừa tạo.");
             this.btnOpenDirectory.UseVisualStyleBackColor = true;
             this.btnOpenDirectory.Click += new System.EventHandler(this.btnOpenDirectory_Click);
             // 
@@ -155,17 +160,17 @@
             this.lblOutputPath.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblOutputPath.Location = new System.Drawing.Point(12, 127);
             this.lblOutputPath.Name = "lblOutputPath";
-            this.lblOutputPath.Size = new System.Drawing.Size(528, 20);
+            this.lblOutputPath.Size = new System.Drawing.Size(451, 20);
             this.lblOutputPath.TabIndex = 6;
-            this.lblOutputPath.Text = "Path thư mục đầu ra: ";
+            this.lblOutputPath.Text = "Thư mục file tọa độ:";
             this.lblOutputPath.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // btnInitialize
             // 
             this.btnInitialize.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnInitialize.Location = new System.Drawing.Point(423, 76);
+            this.btnInitialize.Location = new System.Drawing.Point(432, 82);
             this.btnInitialize.Name = "btnInitialize";
-            this.btnInitialize.Size = new System.Drawing.Size(103, 46);
+            this.btnInitialize.Size = new System.Drawing.Size(103, 36);
             this.btnInitialize.TabIndex = 10;
             this.btnInitialize.Text = "Khởi tạo lại";
             this.btnInitialize.UseVisualStyleBackColor = true;
@@ -175,14 +180,27 @@
             // 
             this.labelAuthor.AutoSize = true;
             this.labelAuthor.BackColor = System.Drawing.Color.Transparent;
-            this.labelAuthor.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.labelAuthor.Font = new System.Drawing.Font("Tahoma", 6.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.labelAuthor.ForeColor = System.Drawing.SystemColors.ButtonShadow;
-            this.labelAuthor.Location = new System.Drawing.Point(448, 526);
+            this.labelAuthor.Location = new System.Drawing.Point(457, 529);
             this.labelAuthor.Name = "labelAuthor";
-            this.labelAuthor.Size = new System.Drawing.Size(90, 13);
+            this.labelAuthor.Size = new System.Drawing.Size(79, 11);
             this.labelAuthor.TabIndex = 11;
             this.labelAuthor.Text = "©Nông Văn Phấn";
             this.labelAuthor.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // lblCellCount
+            // 
+            this.lblCellCount.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.lblCellCount.AutoSize = true;
+            this.lblCellCount.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblCellCount.ForeColor = System.Drawing.Color.Red;
+            this.lblCellCount.Location = new System.Drawing.Point(482, 129);
+            this.lblCellCount.Name = "lblCellCount";
+            this.lblCellCount.Size = new System.Drawing.Size(44, 15);
+            this.lblCellCount.TabIndex = 12;
+            this.lblCellCount.Text = "Q\'ty: 0";
+            this.lblCellCount.Visible = false;
             // 
             // MainForm
             // 
@@ -201,6 +219,7 @@
             this.Controls.Add(this.btnGenerateFiles);
             this.Controls.Add(this.txtFilePath);
             this.Controls.Add(this.btnSelectFile);
+            this.Controls.Add(this.lblCellCount);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
