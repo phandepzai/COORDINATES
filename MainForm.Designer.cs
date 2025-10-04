@@ -29,9 +29,9 @@
             this.txtDefectName = new System.Windows.Forms.TextBox();
             this.lblDefectName = new System.Windows.Forms.Label();
             this.btnSelectFile = new System.Windows.Forms.Button();
+            this.btnOpenDirectory = new System.Windows.Forms.Button();
             this.txtFilePath = new System.Windows.Forms.TextBox();
             this.btnGenerateFiles = new System.Windows.Forms.Button();
-            this.btnOpenDirectory = new System.Windows.Forms.Button();
             this.lblFilePath = new System.Windows.Forms.Label();
             this.lblOutputPath = new System.Windows.Forms.Label();
             this.btnInitialize = new System.Windows.Forms.Button();
@@ -114,6 +114,18 @@
             this.btnSelectFile.UseVisualStyleBackColor = true;
             this.btnSelectFile.Click += new System.EventHandler(this.btnSelectFile_Click);
             // 
+            // btnOpenDirectory
+            // 
+            this.btnOpenDirectory.Font = new System.Drawing.Font("Segoe UI Semibold", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnOpenDirectory.Location = new System.Drawing.Point(432, 15);
+            this.btnOpenDirectory.Name = "btnOpenDirectory";
+            this.btnOpenDirectory.Size = new System.Drawing.Size(103, 39);
+            this.btnOpenDirectory.TabIndex = 3;
+            this.btnOpenDirectory.Text = "Mở thư mục chứa file vừa tạo";
+            this.toolTip.SetToolTip(this.btnOpenDirectory, "Bấm vào đây để mở thư mục chứa file tọa độ vừa tạo.");
+            this.btnOpenDirectory.UseVisualStyleBackColor = true;
+            this.btnOpenDirectory.Click += new System.EventHandler(this.btnOpenDirectory_Click);
+            // 
             // txtFilePath
             // 
             this.txtFilePath.Font = new System.Drawing.Font("Consolas", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
@@ -134,18 +146,6 @@
             this.btnGenerateFiles.Text = "TẠO FILE";
             this.btnGenerateFiles.UseVisualStyleBackColor = true;
             this.btnGenerateFiles.Click += new System.EventHandler(this.btnGenerateFiles_Click);
-            // 
-            // btnOpenDirectory
-            // 
-            this.btnOpenDirectory.Font = new System.Drawing.Font("Segoe UI Semibold", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnOpenDirectory.Location = new System.Drawing.Point(432, 15);
-            this.btnOpenDirectory.Name = "btnOpenDirectory";
-            this.btnOpenDirectory.Size = new System.Drawing.Size(103, 39);
-            this.btnOpenDirectory.TabIndex = 3;
-            this.btnOpenDirectory.Text = "Mở thư mục chứa file vừa tạo";
-            this.toolTip.SetToolTip(this.btnOpenDirectory, "Bấm vào đây để mở thư mục chứa file tọa độ vừa tạo.");
-            this.btnOpenDirectory.UseVisualStyleBackColor = true;
-            this.btnOpenDirectory.Click += new System.EventHandler(this.btnOpenDirectory_Click);
             // 
             // lblFilePath
             // 
@@ -182,7 +182,7 @@
             this.labelAuthor.BackColor = System.Drawing.Color.Transparent;
             this.labelAuthor.Font = new System.Drawing.Font("Tahoma", 6.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.labelAuthor.ForeColor = System.Drawing.SystemColors.ButtonShadow;
-            this.labelAuthor.Location = new System.Drawing.Point(457, 529);
+            this.labelAuthor.Location = new System.Drawing.Point(448, 525);
             this.labelAuthor.Name = "labelAuthor";
             this.labelAuthor.Size = new System.Drawing.Size(79, 11);
             this.labelAuthor.TabIndex = 11;
