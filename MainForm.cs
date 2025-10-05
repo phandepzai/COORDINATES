@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Drawing2D;
@@ -33,7 +33,7 @@ namespace Generator_Coordinate
             txtDefectName.Text = string.Empty;
             txtDefectName.Enabled = chkMode.Checked;
             lblDefectName.Enabled = chkMode.Checked;
-            labelAuthor.BackColor = Color.Transparent;
+            //labelAuthor.BackColor = Color.Transparent;
 
             // Đặt lại chế độ về ĐỐM
             //chkMode.Checked = false;
