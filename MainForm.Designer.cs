@@ -14,7 +14,6 @@
         private System.Windows.Forms.Label lblDefectName;
         private System.Windows.Forms.ToolTip toolTip;
         private System.Windows.Forms.Button btnInitialize; // Nút Khởi tạo lại mới
-        private System.Windows.Forms.Label labelAuthor;
         private System.ComponentModel.IContainer components;
         private System.Windows.Forms.Label lblCellCount;
 
@@ -35,7 +34,6 @@
             this.lblFilePath = new System.Windows.Forms.Label();
             this.lblOutputPath = new System.Windows.Forms.Label();
             this.btnInitialize = new System.Windows.Forms.Button();
-            this.labelAuthor = new System.Windows.Forms.Label();
             this.lblCellCount = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridViewPreview)).BeginInit();
             this.SuspendLayout();
@@ -60,7 +58,7 @@
         "m dường dọc, Đốm Panel, Đốm Spin,v.v..)\r\n- Chế độ SPOT (Position X, Y) (dành cho" +
         " các lỗi B-spot,White Spot)");
             this.chkMode.UseVisualStyleBackColor = false;
-            this.chkMode.CheckedChanged += new System.EventHandler(this.chkMode_CheckedChanged);
+            this.chkMode.CheckedChanged += new System.EventHandler(this.ChkMode_CheckedChanged);
             // 
             // dataGridViewPreview
             // 
@@ -112,7 +110,7 @@
             this.btnSelectFile.Text = "Chọn tệp";
             this.toolTip.SetToolTip(this.btnSelectFile, "Bấm vào đây để nhập dữ liệu từ file .txt lưu trong máy.");
             this.btnSelectFile.UseVisualStyleBackColor = true;
-            this.btnSelectFile.Click += new System.EventHandler(this.btnSelectFile_Click);
+            this.btnSelectFile.Click += new System.EventHandler(this.BtnSelectFile_Click);
             // 
             // btnOpenDirectory
             // 
@@ -124,7 +122,7 @@
             this.btnOpenDirectory.Text = "Mở thư mục chứa file vừa tạo";
             this.toolTip.SetToolTip(this.btnOpenDirectory, "Bấm vào đây để mở thư mục chứa file tọa độ vừa tạo.");
             this.btnOpenDirectory.UseVisualStyleBackColor = true;
-            this.btnOpenDirectory.Click += new System.EventHandler(this.btnOpenDirectory_Click);
+            this.btnOpenDirectory.Click += new System.EventHandler(this.BtnOpenDirectory_Click);
             // 
             // txtFilePath
             // 
@@ -145,7 +143,7 @@
             this.btnGenerateFiles.TabIndex = 2;
             this.btnGenerateFiles.Text = "TẠO FILE";
             this.btnGenerateFiles.UseVisualStyleBackColor = true;
-            this.btnGenerateFiles.Click += new System.EventHandler(this.btnGenerateFiles_Click);
+            this.btnGenerateFiles.Click += new System.EventHandler(this.BtnGenerateFiles_Click);
             // 
             // lblFilePath
             // 
@@ -174,20 +172,7 @@
             this.btnInitialize.TabIndex = 10;
             this.btnInitialize.Text = "Khởi tạo lại";
             this.btnInitialize.UseVisualStyleBackColor = true;
-            this.btnInitialize.Click += new System.EventHandler(this.btnInitialize_Click);
-            // 
-            // labelAuthor
-            // 
-            this.labelAuthor.AutoSize = true;
-            this.labelAuthor.BackColor = System.Drawing.Color.Transparent;
-            this.labelAuthor.Font = new System.Drawing.Font("Tahoma", 6.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.labelAuthor.ForeColor = System.Drawing.SystemColors.ButtonShadow;
-            this.labelAuthor.Location = new System.Drawing.Point(448, 525);
-            this.labelAuthor.Name = "labelAuthor";
-            this.labelAuthor.Size = new System.Drawing.Size(79, 11);
-            this.labelAuthor.TabIndex = 11;
-            this.labelAuthor.Text = "©Nông Văn Phấn";
-            this.labelAuthor.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.btnInitialize.Click += new System.EventHandler(this.BtnInitialize_Click);
             // 
             // lblCellCount
             // 
@@ -207,7 +192,6 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(548, 548);
-            this.Controls.Add(this.labelAuthor);
             this.Controls.Add(this.btnInitialize);
             this.Controls.Add(this.lblDefectName);
             this.Controls.Add(this.txtDefectName);
@@ -225,7 +209,7 @@
             this.MaximizeBox = false;
             this.Name = "MainForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "Generator Coordinate";
+            this.Text = "TẠO FILE TỌA ĐỘ REWORK";
             ((System.ComponentModel.ISupportInitialize)(this.dataGridViewPreview)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();

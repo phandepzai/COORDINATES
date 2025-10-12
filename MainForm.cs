@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Drawing2D;
@@ -33,7 +33,6 @@ namespace Generator_Coordinate
             txtDefectName.Text = string.Empty;
             txtDefectName.Enabled = chkMode.Checked;
             lblDefectName.Enabled = chkMode.Checked;
-            //labelAuthor.BackColor = Color.Transparent;
 
             // Đặt lại chế độ về ĐỐM
             //chkMode.Checked = false;
@@ -97,7 +96,7 @@ namespace Generator_Coordinate
         }
         #endregion
 
-        #region Trong khu vực #region XỬ LÝ DỮ LIỆU PASTE VÀ KIỂM TRA QUYỀN GHI
+        #region XỬ LÝ DỮ LIỆU PASTE VÀ KIỂM TRA QUYỀN GHI
 
         private void HandlePaste()
         {
@@ -321,7 +320,7 @@ namespace Generator_Coordinate
             UpdateDataGridViewContent();
         }
 
-        private void chkMode_CheckedChanged(object sender, EventArgs e)
+        private void ChkMode_CheckedChanged(object sender, EventArgs e)
         {
             txtDefectName.Enabled = chkMode.Checked;
             lblDefectName.Enabled = chkMode.Checked;
@@ -331,10 +330,12 @@ namespace Generator_Coordinate
             UpdateDataGridView(); // Cập nhật cả cột và nội dung
         }
 
-        private void btnSelectFile_Click(object sender, EventArgs e)
+        private void BtnSelectFile_Click(object sender, EventArgs e)
         {
-            OpenFileDialog openFileDialog = new OpenFileDialog();
-            openFileDialog.Filter = "Text files (*.txt)|*.txt|All files (*.*)|*.*";
+            OpenFileDialog openFileDialog = new OpenFileDialog
+            {
+                Filter = "Text files (*.txt)|*.txt|All files (*.*)|*.*"
+            };
             if (openFileDialog.ShowDialog() == DialogResult.OK)
             {
                 inputFilePath = openFileDialog.FileName;
@@ -349,7 +350,7 @@ namespace Generator_Coordinate
         #region NÚT BẤM TẠO FILE VÀ XỬ LÝ SỰ KIỆN
 
         //Phương thức xử lý sự kiện khi người dùng nhấn nút "Tạo File"
-        private void btnGenerateFiles_Click(object sender, EventArgs e)
+        private void BtnGenerateFiles_Click(object sender, EventArgs e)
         {
             if (string.IsNullOrEmpty(inputFilePath) && dataGridViewPreview.Rows.Count == 0)
             {
@@ -607,7 +608,7 @@ namespace Generator_Coordinate
             return System.Text.RegularExpressions.Regex.IsMatch(name, @"^[a-zA-Z0-9\s\-]+$");
         }
 
-        private void btnOpenDirectory_Click(object sender, EventArgs e)
+        private void BtnOpenDirectory_Click(object sender, EventArgs e)
         {
             if (Directory.Exists(outputDirectory))
             {
@@ -619,7 +620,7 @@ namespace Generator_Coordinate
             }
         }
 
-        private void btnInitialize_Click(object sender, EventArgs e)
+        private void BtnInitialize_Click(object sender, EventArgs e)
         {
             ResetApplicationState();
             lblOutputPath.Text = "Ứng dụng đã được khởi tạo lại!";
