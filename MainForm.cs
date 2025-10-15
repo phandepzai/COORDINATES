@@ -23,6 +23,12 @@ namespace Generator_Coordinate
             toolTip.InitialDelay = 300;
             toolTip.ReshowDelay = 100;
             toolTip.ShowAlways = false;
+            //Kiểm tra bản cập nhật mới ứng dụng khi chạy
+            UpdateManager.CheckForUpdates("Generator Coordinate.exe", new[]
+            {
+                "http://107.125.221.79:8888/update/Coordinate/",
+                //"http://107.126.41.111:8888/update/Coordinate/",              
+            });
         }
 
         private void ResetApplicationState()
@@ -33,11 +39,7 @@ namespace Generator_Coordinate
             txtDefectName.Text = string.Empty;
             txtDefectName.Enabled = chkMode.Checked;
             lblDefectName.Enabled = chkMode.Checked;
-
-            // Đặt lại chế độ về ĐỐM
-            //chkMode.Checked = false;
-            //chkMode.Text = "ĐỐM";
-            //chkMode.BackColor = Color.FromArgb(235, 170, 90); // Màu cam
+            btnGenerateFiles.Enabled = false;
 
             // Đặt lại DataGridView
             dataGridViewPreview.Rows.Clear();
@@ -97,7 +99,6 @@ namespace Generator_Coordinate
         #endregion
 
         #region XỬ LÝ DỮ LIỆU PASTE VÀ KIỂM TRA QUYỀN GHI
-
         private void HandlePaste()
         {
             try
@@ -106,11 +107,10 @@ namespace Generator_Coordinate
                 if (string.IsNullOrWhiteSpace(clipboardText))
                 {
                     MessageBox.Show("Clipboard rỗng hoặc không chứa dữ liệu văn bản.", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    btnGenerateFiles.Enabled = false; // Vô hiệu hóa nút nếu clipboard rỗng
                     return;
                 }
 
-                // LƯU Ý: Dòng này đã được xóa để cho phép dán nhiều lần
-                // dataGridViewPreview.Rows.Clear(); 
                 string[] lines = clipboardText.Split(new[] { "\r\n", "\n" }, StringSplitOptions.RemoveEmptyEntries);
                 bool hasValidData = false;
 
@@ -119,23 +119,27 @@ namespace Generator_Coordinate
                     foreach (string line in lines)
                     {
                         if (string.IsNullOrWhiteSpace(line)) continue;
-                        string[] parts = line.Split(new[] { '=', '\t', ',' }, StringSplitOptions.RemoveEmptyEntries);
-                        if (parts.Length != 3) continue; // CELL_ID, X, Y
+                        string[] parts = line.Split('\t');
+                        if (parts.Length != 3 && parts.Length != 7) continue; // Chấp nhận 3 cột hoặc 7 cột
 
                         string cellId = parts[0].Trim();
                         if (string.IsNullOrWhiteSpace(cellId)) continue;
 
-                        string posX = parts[1].Trim();
-                        string posY = parts[2].Trim();
+                        // Khởi tạo mảng coordinates với 6 phần tử (cho X1,Y1,X2,Y2,X3,Y3), mặc định rỗng
+                        string[] coordinates = new string[6] { "", "", "", "", "", "" };
+                        int coordCount = parts.Length == 3 ? 2 : 6; // 3 cột -> chỉ lấy X1,Y1; 7 cột -> lấy tất cả
 
-                        if (!double.TryParse(posX, out _) || !double.TryParse(posY, out _)) continue;
+                        for (int i = 0; i < coordCount && i < parts.Length - 1; i++)
+                        {
+                            coordinates[i] = parts[i + 1].Trim();
+                        }
 
-                        // Thêm dòng mới thay vì xóa dòng cũ
-                        dataGridViewPreview.Rows.Add(cellId, $"{posX},{posY}");
+                        // Thêm dòng vào DataGridView với 7 cột
+                        dataGridViewPreview.Rows.Add(cellId, coordinates[0], coordinates[1], coordinates[2], coordinates[3], coordinates[4], coordinates[5]);
                         hasValidData = true;
                     }
                 }
-                else // Chế độ ĐỐM
+                else // Chế độ ĐỐM (giữ nguyên mã gốc)
                 {
                     foreach (string line in lines)
                     {
@@ -153,7 +157,6 @@ namespace Generator_Coordinate
                             !double.TryParse(ex, out _) || !double.TryParse(ey, out _))
                             continue;
 
-                        // Thêm dòng mới thay vì xóa dòng cũ
                         dataGridViewPreview.Rows.Add(cellId, sx, sy, ex, ey);
                         hasValidData = true;
                     }
@@ -161,16 +164,22 @@ namespace Generator_Coordinate
 
                 if (!hasValidData)
                 {
-                    string mode = chkMode.Checked ? "SPOT (định dạng: CELL_ID=X,Y hoặc CELL_ID<TAB>X,Y hoặc CELL_ID,X,Y)" : "ĐỐM (định dạng: CELL_ID<TAB>Sx<TAB>Sy<TAB>Ex<TAB>Ey)";
+                    string mode = chkMode.Checked ? "SPOT (định dạng: CELL_ID<TAB>X1<TAB>Y1 hoặc CELL_ID<TAB>X1<TAB>Y1<TAB>X2<TAB>Y2<TAB>X3<TAB>Y3)" : "ĐỐM (định dạng: CELL_ID<TAB>Sx<TAB>Sy<TAB>Ex<TAB>Ey)";
                     MessageBox.Show($"Dữ liệu clipboard không hợp lệ cho chế độ {mode}.", "Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    btnGenerateFiles.Enabled = false; // Vô hiệu hóa nút nếu không có dữ liệu hợp lệ
+                }
+                else
+                {
+                    btnGenerateFiles.Enabled = true; // Bật nút nếu có dữ liệu hợp lệ
                 }
 
                 lblOutputPath.Visible = false;
-                UpdateCellCountLabel(); // Gọi phương thức cập nhật số lượng
+                UpdateCellCountLabel();
             }
             catch (Exception ex)
             {
                 MessageBox.Show($"Lỗi khi paste dữ liệu: {ex.Message}", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                btnGenerateFiles.Enabled = dataGridViewPreview.Rows.Count > 0; // Cập nhật trạng thái nút dựa trên dữ liệu hiện có
             }
         }
 
@@ -182,7 +191,7 @@ namespace Generator_Coordinate
             {
                 rowCount--;
             }
-            lblCellCount.Text = $"Q'ty: {rowCount}";
+            lblCellCount.Text = $"Total: {rowCount}";
             lblCellCount.Visible = true;
         }
 
@@ -218,7 +227,7 @@ namespace Generator_Coordinate
                     : Color.FromArgb(235, 170, 90);
             };
         }
-#endregion
+        #endregion
 
         #region GIAO DIỆN DATAGRIDVIEW VÀ CẬP NHẬT NỘI DUNG
 
@@ -228,17 +237,22 @@ namespace Generator_Coordinate
             if (isSpotMode)
             {
                 dataGridViewPreview.Columns.Add("CellID", "CELL ID");
-                dataGridViewPreview.Columns.Add("CoordinatesXY", "TỌA ĐỘ X,Y");
+                dataGridViewPreview.Columns.Add("X1", "X1");
+                dataGridViewPreview.Columns.Add("Y1", "Y1");
+                dataGridViewPreview.Columns.Add("X2", "X2");
+                dataGridViewPreview.Columns.Add("Y2", "Y2");
+                dataGridViewPreview.Columns.Add("X3", "X3");
+                dataGridViewPreview.Columns.Add("Y3", "Y3");
             }
             else
             {
                 dataGridViewPreview.Columns.Add("CellID", "CELL ID");
-                dataGridViewPreview.Columns.Add("DefectSx", "TỌA ĐỘ Sx");
-                dataGridViewPreview.Columns.Add("DefectSy", "TỌA ĐỘ Sy");
-                dataGridViewPreview.Columns.Add("DefectEx", "TỌA ĐỘ Ex");
-                dataGridViewPreview.Columns.Add("DefectEy", "TỌA ĐỘ Ey");
+                dataGridViewPreview.Columns.Add("DefectSx", "Pos Sx");
+                dataGridViewPreview.Columns.Add("DefectSy", "Pos Sy");
+                dataGridViewPreview.Columns.Add("DefectEx", "Pos Ex");
+                dataGridViewPreview.Columns.Add("DefectEy", "Pos Ey");
             }
-            dataGridViewPreview.Refresh(); // Làm mới giao diện DataGridView
+            dataGridViewPreview.Refresh();
         }
 
         private void UpdateDataGridViewContent()
@@ -248,10 +262,9 @@ namespace Generator_Coordinate
 
             if (string.IsNullOrEmpty(inputFilePath) || !File.Exists(inputFilePath))
             {
-                // Nếu không có tệp đầu vào, kiểm tra dữ liệu trong DataGridView
                 if (dataGridViewPreview.Rows.Count > 0)
                 {
-                    hasValidData = true; // Dữ liệu đã có từ paste hoặc nguồn khác
+                    hasValidData = true;
                 }
             }
             else
@@ -266,21 +279,27 @@ namespace Generator_Coordinate
                             while ((line = reader.ReadLine()) != null)
                             {
                                 if (string.IsNullOrWhiteSpace(line)) continue;
-                                string[] parts = line.Split('=');
-                                if (parts.Length != 2) continue;
+                                string[] parts = line.Split('\t');
+                                if (parts.Length != 3 && parts.Length != 7) continue; // Chấp nhận 3 cột hoặc 7 cột
+
                                 string cellId = parts[0].Trim();
                                 if (string.IsNullOrWhiteSpace(cellId)) continue;
-                                string[] coordinates = parts[1].Split(',');
-                                if (coordinates.Length != 2 || string.IsNullOrWhiteSpace(coordinates[0]) || string.IsNullOrWhiteSpace(coordinates[1]))
-                                    continue;
-                                if (!double.TryParse(coordinates[0].Trim(), out _) || !double.TryParse(coordinates[1].Trim(), out _))
-                                    continue;
-                                string coordinatesXY = $"{coordinates[0].Trim()},{coordinates[1].Trim()}";
-                                dataGridViewPreview.Rows.Add(cellId, coordinatesXY);
+
+                                // Khởi tạo mảng coordinates với 6 phần tử (cho X1,Y1,X2,Y2,X3,Y3), mặc định rỗng
+                                string[] coordinates = new string[6] { "", "", "", "", "", "" };
+                                int coordCount = parts.Length == 3 ? 2 : 6; // 3 cột -> chỉ lấy X1,Y1; 7 cột -> lấy tất cả
+
+                                for (int i = 0; i < coordCount && i < parts.Length - 1; i++)
+                                {
+                                    coordinates[i] = parts[i + 1].Trim();
+                                }
+
+                                // Thêm dòng vào DataGridView
+                                dataGridViewPreview.Rows.Add(cellId, coordinates[0], coordinates[1], coordinates[2], coordinates[3], coordinates[4], coordinates[5]);
                                 hasValidData = true;
                             }
                         }
-                        else // Chế độ ĐỐM
+                        else // Chế độ ĐỐM (giữ nguyên mã gốc)
                         {
                             string line;
                             while ((line = reader.ReadLine()) != null)
@@ -300,18 +319,28 @@ namespace Generator_Coordinate
 
                     if (!hasValidData)
                     {
-                        string mode = chkMode.Checked ? "SPOT (định dạng: CELL_ID=X,Y)" : "ĐỐM (định dạng: CELL_ID\\tSx\\tSy\\tEx\\tEy)";
+                        string mode = chkMode.Checked ? "SPOT (định dạng: CELL_ID<TAB>X1<TAB>Y1 hoặc CELL_ID<TAB>X1<TAB>Y1<TAB>X2<TAB>Y2<TAB>X3<TAB>Y3)" : "ĐỐM (định dạng: CELL_ID<TAB>Sx<TAB>Sy<TAB>Ex<TAB>Ey)";
                         MessageBox.Show($"File không chứa dữ liệu hợp lệ cho chế độ {mode}.", "Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        btnGenerateFiles.Enabled = false; // Vô hiệu hóa nút nếu không có dữ liệu hợp lệ
+                    }
+                    else
+                    {
+                        btnGenerateFiles.Enabled = true; // Bật nút nếu có dữ liệu hợp lệ
                     }
                 }
                 catch (Exception ex)
                 {
                     MessageBox.Show($"Lỗi khi đọc file: {ex.Message}", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    btnGenerateFiles.Enabled = dataGridViewPreview.Rows.Count > 0; // Cập nhật trạng thái nút
                 }
             }
+            if (!hasValidData)
+            {
+                btnGenerateFiles.Enabled = false; // Vô hiệu hóa nút nếu không có dữ liệu
+            }
 
-            dataGridViewPreview.Refresh(); // Làm mới giao diện DataGridView
-            UpdateCellCountLabel(); //Cập nhật số lượng cell trong DataGridView
+            dataGridViewPreview.Refresh();
+            UpdateCellCountLabel();
         }
 
         private void UpdateDataGridView()
@@ -342,14 +371,13 @@ namespace Generator_Coordinate
                 txtFilePath.Text = inputFilePath;
                 lblOutputPath.Visible = false;
                 UpdateDataGridView();
+                btnGenerateFiles.Enabled = dataGridViewPreview.Rows.Count > 0; // Bật nút nếu có dữ liệu
             }
         }
 
         #endregion
 
         #region NÚT BẤM TẠO FILE VÀ XỬ LÝ SỰ KIỆN
-
-        //Phương thức xử lý sự kiện khi người dùng nhấn nút "Tạo File"
         private void BtnGenerateFiles_Click(object sender, EventArgs e)
         {
             if (string.IsNullOrEmpty(inputFilePath) && dataGridViewPreview.Rows.Count == 0)
@@ -358,35 +386,20 @@ namespace Generator_Coordinate
                 return;
             }
 
-            if (chkMode.Checked && string.IsNullOrWhiteSpace(txtDefectName.Text))
-            {
-                MessageBox.Show("Vui lòng nhập tên lỗi cho chế độ SPOT.", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
-            }
-
-            if (chkMode.Checked && !IsValidDefectName(txtDefectName.Text))
-            {
-                MessageBox.Show("Tên lỗi không hợp lệ. Vui lòng chỉ sử dụng chữ cái, số, dấu gạch ngang hoặc khoảng trắng.", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
-            }
-
             try
             {
-                // Kiểm tra và tạo thư mục gốc D:\Non_Documents nếu chưa tồn tại
                 string baseOutputPath = @"D:\Non_Documents";
                 if (!Directory.Exists(baseOutputPath))
                 {
                     Directory.CreateDirectory(baseOutputPath);
                 }
 
-                // Kiểm tra quyền ghi vào thư mục gốc
                 if (!CanWriteToDirectory(baseOutputPath))
                 {
                     MessageBox.Show($"Không có quyền ghi vào thư mục {baseOutputPath}. Chuyển sang thư mục Desktop.", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     outputDirectory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), Path.GetFileName(outputDirectory));
                 }
 
-                // Tạo thư mục đầu ra cụ thể (FAB_YYYYMMDD) nếu chưa tồn tại
                 if (!Directory.Exists(outputDirectory))
                 {
                     Directory.CreateDirectory(outputDirectory);
@@ -394,58 +407,122 @@ namespace Generator_Coordinate
 
                 int fileCount = 0;
 
-                if (dataGridViewPreview.Rows.Count > 0)
+                if (chkMode.Checked) // Chế độ SPOT
                 {
-                    if (chkMode.Checked) // Chế độ SPOT
+                    if (string.IsNullOrWhiteSpace(txtDefectName.Text))
                     {
-                        Dictionary<string, List<(string X, string Y)>> cellData = new Dictionary<string, List<(string, string)>>();
+                        MessageBox.Show("Vui lòng nhập tên lỗi cho chế độ SPOT.", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        return;
+                    }
 
+                    if (!IsValidDefectName(txtDefectName.Text))
+                    {
+                        MessageBox.Show("Tên lỗi không hợp lệ. Vui lòng chỉ sử dụng chữ cái, số, dấu gạch ngang hoặc khoảng trắng.", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        return;
+                    }
+
+                    Dictionary<string, List<(string X, string Y)>> cellData = new Dictionary<string, List<(string, string)>>();
+
+                    if (dataGridViewPreview.Rows.Count > 0)
+                    {
                         foreach (DataGridViewRow row in dataGridViewPreview.Rows)
                         {
                             if (row.IsNewRow) continue;
                             string cellId = row.Cells["CellID"].Value?.ToString().Trim();
-                            string coordinatesXY = row.Cells["CoordinatesXY"].Value?.ToString().Trim();
+                            if (string.IsNullOrWhiteSpace(cellId)) continue;
 
-                            if (string.IsNullOrWhiteSpace(cellId) || string.IsNullOrWhiteSpace(coordinatesXY)) continue;
-
-                            string[] coordinates = coordinatesXY.Split(',');
-                            if (coordinates.Length != 2) continue;
-
-                            string posX = coordinates[0].Trim();
-                            string posY = coordinates[1].Trim();
-
-                            if (!double.TryParse(posX, out _) || !double.TryParse(posY, out _)) continue;
-
-                            if (!cellData.ContainsKey(cellId))
+                            // Xử lý từng cặp tọa độ (X1,Y1), (X2,Y2), (X3,Y3)
+                            for (int i = 0; i < 3; i++)
                             {
-                                cellData[cellId] = new List<(string, string)>();
-                            }
-                            cellData[cellId].Add((posX, posY));
-                        }
+                                string x = row.Cells[1 + i * 2].Value?.ToString().Trim();
+                                string y = row.Cells[2 + i * 2].Value?.ToString().Trim();
 
-                        foreach (var cell in cellData)
-                        {
-                            string cellId = cell.Key;
-                            var coordinates = cell.Value;
+                                // Bỏ qua nếu X hoặc Y rỗng hoặc bằng 0
+                                if (string.IsNullOrWhiteSpace(x) || string.IsNullOrWhiteSpace(y)) continue;
+                                if (!double.TryParse(x, out double xValue) || !double.TryParse(y, out double yValue)) continue;
+                                if (xValue == 0 || yValue == 0) continue;
 
-                            string filePath = Path.Combine(outputDirectory, $"{cellId}.txt");
-                            using (StreamWriter writer = new StreamWriter(filePath, false, new UTF8Encoding(false)))
-                            {
-                                writer.WriteLine("[DETAIL_RESULT]");
-                                writer.WriteLine($"DETAIL_RESULT_COUNT={coordinates.Count}");
-                                for (int i = 0; i < coordinates.Count; i++)
+                                if (!cellData.ContainsKey(cellId))
                                 {
-                                    writer.WriteLine($"DETAIL_RESULT_NAME={txtDefectName.Text}");
-                                    writer.WriteLine($"DETAIL_RESULT_XY_{i + 1}={coordinates[i].X},{coordinates[i].Y}");
+                                    cellData[cellId] = new List<(string, string)>();
                                 }
+                                cellData[cellId].Add((x, y));
                             }
-                            fileCount++;
                         }
                     }
-                    else // Chế độ ĐỐM
+                    else if (!string.IsNullOrEmpty(inputFilePath))
                     {
-                        Dictionary<string, List<(string Sx, string Sy, string Ex, string Ey)>> cellData = new Dictionary<string, List<(string, string, string, string)>>();
+                        using (StreamReader reader = new StreamReader(inputFilePath))
+                        {
+                            string line;
+                            while ((line = reader.ReadLine()) != null)
+                            {
+                                if (string.IsNullOrWhiteSpace(line)) continue;
+                                string[] parts = line.Split('\t');
+                                if (parts.Length != 3 && parts.Length != 7) continue; // Chấp nhận 3 cột hoặc 7 cột
 
+                                string cellId = parts[0].Trim();
+                                if (string.IsNullOrWhiteSpace(cellId)) continue;
+
+                                // Xử lý các cặp tọa độ
+                                int coordPairs = parts.Length == 3 ? 1 : 3; // 3 cột -> 1 cặp; 7 cột -> 3 cặp
+                                for (int i = 0; i < coordPairs; i++)
+                                {
+                                    string x = parts[1 + i * 2].Trim();
+                                    string y = parts[2 + i * 2].Trim();
+
+                                    // Bỏ qua nếu X hoặc Y rỗng hoặc bằng 0
+                                    if (string.IsNullOrWhiteSpace(x) || string.IsNullOrWhiteSpace(y)) continue;
+                                    if (!double.TryParse(x, out double xValue) || !double.TryParse(y, out double yValue)) continue;
+                                    if (xValue == 0 || yValue == 0) continue;
+
+                                    if (!cellData.ContainsKey(cellId))
+                                    {
+                                        cellData[cellId] = new List<(string, string)>();
+                                    }
+                                    cellData[cellId].Add((x, y));
+                                }
+                            }
+                        }
+                    }
+                    else
+                    {
+                        MessageBox.Show("Vui lòng chọn một file hợp lệ hoặc paste dữ liệu vào DataGridView.", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        return;
+                    }
+
+                    if (cellData.Count == 0)
+                    {
+                        MessageBox.Show("Không có dữ liệu hợp lệ để tạo tệp.", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        btnGenerateFiles.Enabled = false; // Vô hiệu hóa nút nếu không có dữ liệu hợp lệ
+                        return;
+                    }
+
+                    foreach (var cell in cellData)
+                    {
+                        string cellId = cell.Key;
+                        var coordinates = cell.Value;
+
+                        string filePath = Path.Combine(outputDirectory, $"{cellId}.txt");
+                        using (StreamWriter writer = new StreamWriter(filePath, false, new UTF8Encoding(false)))
+                        {
+                            writer.WriteLine("[DETAIL_RESULT]");
+                            writer.WriteLine($"DETAIL_RESULT_COUNT={coordinates.Count}");
+                            for (int i = 0; i < coordinates.Count; i++)
+                            {
+                                writer.WriteLine($"DETAIL_RESULT_NAME_{i + 1}={txtDefectName.Text}");
+                                writer.WriteLine($"DETAIL_RESULT_XY_{i + 1}={coordinates[i].X},{coordinates[i].Y}");
+                            }
+                        }
+                        fileCount++;
+                    }
+                }
+                else // Chế độ ĐỐM (giữ nguyên mã gốc)
+                {
+                    Dictionary<string, List<(string Sx, string Sy, string Ex, string Ey)>> cellData = new Dictionary<string, List<(string, string, string, string)>>();
+
+                    if (dataGridViewPreview.Rows.Count > 0)
+                    {
                         foreach (DataGridViewRow row in dataGridViewPreview.Rows)
                         {
                             if (row.IsNewRow) continue;
@@ -470,79 +547,9 @@ namespace Generator_Coordinate
                             }
                             cellData[cellId].Add((sx, sy, ex, ey));
                         }
-
-                        foreach (var cell in cellData)
-                        {
-                            string cellId = cell.Key;
-                            var defects = cell.Value;
-
-                            string filePath = Path.Combine(outputDirectory, $"{cellId}.txt");
-                            using (StreamWriter writer = new StreamWriter(filePath, false, new UTF8Encoding(false)))
-                            {
-                                writer.WriteLine("[MANUAL_POS_DETAIL]");
-                                writer.WriteLine($"DETAIL_DEFECT_COUNT={defects.Count}");
-                                for (int i = 0; i < defects.Count; i++)
-                                {
-                                    writer.WriteLine($"DEFECT_{i + 1}_X={defects[i].Sx},{defects[i].Ex}");
-                                    writer.WriteLine($"DEFECT_{i + 1}_Y={defects[i].Sy},{defects[i].Ey}");
-                                }
-                            }
-                            fileCount++;
-                        }
                     }
-                }
-                else
-                {
-                    if (chkMode.Checked) // Chế độ SPOT
+                    else
                     {
-                        Dictionary<string, List<(string X, string Y)>> cellData = new Dictionary<string, List<(string, string)>>();
-
-                        using (StreamReader reader = new StreamReader(inputFilePath))
-                        {
-                            string line;
-                            while ((line = reader.ReadLine()) != null)
-                            {
-                                if (string.IsNullOrWhiteSpace(line)) continue;
-                                string[] parts = line.Split('=');
-                                if (parts.Length != 2) continue;
-                                string cellId = parts[0].Trim();
-                                if (string.IsNullOrWhiteSpace(cellId)) continue;
-                                string[] coordinates = parts[1].Split(',');
-                                if (coordinates.Length != 2) continue;
-                                string posX = coordinates[0].Trim();
-                                string posY = coordinates[1].Trim();
-                                if (!double.TryParse(posX, out _) || !double.TryParse(posY, out _)) continue;
-                                if (!cellData.ContainsKey(cellId))
-                                {
-                                    cellData[cellId] = new List<(string, string)>();
-                                }
-                                cellData[cellId].Add((posX, posY));
-                            }
-                        }
-
-                        foreach (var cell in cellData)
-                        {
-                            string cellId = cell.Key;
-                            var coordinates = cell.Value;
-
-                            string filePath = Path.Combine(outputDirectory, $"{cellId}.txt");
-                            using (StreamWriter writer = new StreamWriter(filePath, false, new UTF8Encoding(false)))
-                            {
-                                writer.WriteLine("[DETAIL_RESULT]");
-                                writer.WriteLine($"DETAIL_RESULT_COUNT={coordinates.Count}");
-                                for (int i = 0; i < coordinates.Count; i++)
-                                {
-                                    writer.WriteLine($"DETAIL_RESULT_NAME={txtDefectName.Text}");
-                                    writer.WriteLine($"DETAIL_RESULT_XY_{i + 1}={coordinates[i].X},{coordinates[i].Y}");
-                                }
-                            }
-                            fileCount++;
-                        }
-                    }
-                    else // Chế độ ĐỐM
-                    {
-                        Dictionary<string, List<(string Sx, string Sy, string Ex, string Ey)>> cellData = new Dictionary<string, List<(string, string, string, string)>>();
-
                         using (StreamReader reader = new StreamReader(inputFilePath))
                         {
                             string line;
@@ -566,37 +573,39 @@ namespace Generator_Coordinate
                                 cellData[cellId].Add((sx, sy, ex, ey));
                             }
                         }
+                    }
 
-                        foreach (var cell in cellData)
+                    foreach (var cell in cellData)
+                    {
+                        string cellId = cell.Key;
+                        var defects = cell.Value;
+
+                        string filePath = Path.Combine(outputDirectory, $"{cellId}.txt");
+                        using (StreamWriter writer = new StreamWriter(filePath, false, new UTF8Encoding(false)))
                         {
-                            string cellId = cell.Key;
-                            var defects = cell.Value;
-
-                            string filePath = Path.Combine(outputDirectory, $"{cellId}.txt");
-                            using (StreamWriter writer = new StreamWriter(filePath, false, new UTF8Encoding(false)))
+                            writer.WriteLine("[MANUAL_POS_DETAIL]");
+                            writer.WriteLine($"DETAIL_DEFECT_COUNT={defects.Count}");
+                            for (int i = 0; i < defects.Count; i++)
                             {
-                                writer.WriteLine("[MANUAL_POS_DETAIL]");
-                                writer.WriteLine($"DETAIL_DEFECT_COUNT={defects.Count}");
-                                for (int i = 0; i < defects.Count; i++)
-                                {
-                                    writer.WriteLine($"DEFECT_{i + 1}_X={defects[i].Sx},{defects[i].Ex}");
-                                    writer.WriteLine($"DEFECT_{i + 1}_Y={defects[i].Sy},{defects[i].Ey}");
-                                }
+                                writer.WriteLine($"DEFECT_{i + 1}_X={defects[i].Sx},{defects[i].Ex}");
+                                writer.WriteLine($"DEFECT_{i + 1}_Y={defects[i].Sy},{defects[i].Ey}");
                             }
-                            fileCount++;
                         }
+                        fileCount++;
                     }
                 }
 
-                // Sau khi tạo file thành công
+                // Hiển thị đường dẫn đầy đủ của thư mục đầu ra
+                lblOutputPath.Text = $"Đường dẫn thư mục đầu ra: {outputDirectory}";
                 lblOutputPath.Visible = true;
                 lblOutputPath.ForeColor = Color.ForestGreen;
-                btnOpenDirectory.Text = $"Mở thư mục {Path.GetFileName(outputDirectory)}"; // Cập nhật văn bản nút bấm
+                btnOpenDirectory.Text = $"Mở thư mục {Path.GetFileName(outputDirectory)}";
                 MessageBox.Show($"Tạo thành công {fileCount} tệp!", "Thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
             catch (Exception ex)
             {
                 MessageBox.Show($"Đã xảy ra lỗi: {ex.Message}", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                btnGenerateFiles.Enabled = dataGridViewPreview.Rows.Count > 0; // Cập nhật trạng thái nút
             }
         }
         #endregion
@@ -624,7 +633,7 @@ namespace Generator_Coordinate
         {
             ResetApplicationState();
             lblOutputPath.Text = "Ứng dụng đã được khởi tạo lại!";
-            lblOutputPath.ForeColor = Color.Peru;
+            lblOutputPath.ForeColor = Color.Magenta;
             lblOutputPath.Visible = true;
             btnOpenDirectory.Text = "Mở thư mục chứa file vừa tạo"; // Đặt lại văn bản nút bấm
         }

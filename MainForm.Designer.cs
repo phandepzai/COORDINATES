@@ -69,10 +69,10 @@
             this.dataGridViewPreview.BackgroundColor = System.Drawing.SystemColors.Info;
             this.dataGridViewPreview.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             this.dataGridViewPreview.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dataGridViewPreview.Location = new System.Drawing.Point(9, 150);
+            this.dataGridViewPreview.Location = new System.Drawing.Point(2, 152);
             this.dataGridViewPreview.Name = "dataGridViewPreview";
             this.dataGridViewPreview.ReadOnly = true;
-            this.dataGridViewPreview.Size = new System.Drawing.Size(531, 394);
+            this.dataGridViewPreview.Size = new System.Drawing.Size(542, 394);
             this.dataGridViewPreview.TabIndex = 5;
             this.toolTip.SetToolTip(this.dataGridViewPreview, "Bấm chuột trái vào đây rồi dán list cell từ clipboard để thêm cell cần tạo file t" +
         "ọa độ");
@@ -179,19 +179,19 @@
             this.lblCellCount.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.lblCellCount.AutoSize = true;
             this.lblCellCount.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblCellCount.ForeColor = System.Drawing.Color.Red;
+            this.lblCellCount.ForeColor = System.Drawing.Color.Blue;
             this.lblCellCount.Location = new System.Drawing.Point(482, 129);
             this.lblCellCount.Name = "lblCellCount";
             this.lblCellCount.Size = new System.Drawing.Size(44, 15);
             this.lblCellCount.TabIndex = 12;
-            this.lblCellCount.Text = "Q\'ty: 0";
+            this.lblCellCount.Text = "Total: 0";
             this.lblCellCount.Visible = false;
             // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(548, 548);
+            this.ClientSize = new System.Drawing.Size(547, 548);
             this.Controls.Add(this.btnInitialize);
             this.Controls.Add(this.lblDefectName);
             this.Controls.Add(this.txtDefectName);
